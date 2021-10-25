@@ -1,0 +1,5 @@
+print("Podaj imie i nazwisko:")
+im = input()
+naz = input()
+naz = naz.upper()
+print(im, naz)
