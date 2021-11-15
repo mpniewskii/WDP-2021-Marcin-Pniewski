@@ -8,6 +8,10 @@ print(losowana) #Dla potrzeb sprawdzajacego!
 while True:
     zgadniecie = input()
     zgadniecie = int(zgadniecie)
+    if zgadniecie>losowana:
+        print("liczba za duza")
+    if zgadniecie<losowana:
+        print("liczba za mala")
     licznik += 1
     if zgadniecie == losowana:
         print("Gratulacje zgadles, liczba twoich strzalow to:", licznik)
