@@ -149,3 +149,5 @@ while is_running:
 
 
 pygame.quit()
+
+#Pracowalem_na_zajeciach_10.01_zdalnie_z_powodu_slabego_samopoczucia
