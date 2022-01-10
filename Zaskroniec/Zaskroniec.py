@@ -8,10 +8,12 @@ pygame.init()
 
 mixer.music.load('soundtrack_gra.mp3')
 mixer.music.play()
+pygame.mixer.music.play(-1)
+
 
 def game_over():
     SCREEN.blit(cmentarz, [0, 0])
-    napis_game_over = czcionka_game_over.render("Przegrales! Twoja punktacja to: " + str(punkty), 1, (0, 0, 0))
+    napis_game_over = czcionka_game_over.render("Przegrałeś! Twoja punktacja to: " + str(punkty), 1, (0, 0, 0))
     instrukcje = czcionka_game_over.render("Naciśnij X by zagrać ponownie lub Y by wyjść!", 1, (0, 0, 0))
     SCREEN.blit(napis_game_over, (130, 10))
     SCREEN.blit(instrukcje, (130, 110))
@@ -27,13 +29,28 @@ WIDTH = 900
 HEIGHT = 800
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPSy = pygame.time.Clock()
+
+essa = pygame.image.load('Tlo.jpg').convert_alpha()
+essa = pygame.transform.scale(essa, (900, 800))
+
 czcionka = pygame.font.SysFont("monospace", 12)
 czcionka_game_over = pygame.font.SysFont("arial", 22)
+
 cmentarz = pygame.image.load('game_over.jpg').convert_alpha()
 cmentarz = pygame.transform.scale(cmentarz, (900, 800))
 
+mleczko_power_up = pygame.image.load('mleczko_power_up.png').convert_alpha()
+mleczko_power_up = pygame.transform.scale(mleczko_power_up, (30, 30))
+Xmleczka = int(random.randint(30,850))
+Ymleczka = int(random.randint(30,750))
 
+zupka_power_up = pygame.image.load('zupka_power_up.png').convert_alpha()
+zupka_power_up = pygame.transform.scale(zupka_power_up, (20, 20))
+Xzupki = int(random.randint(30,850))
+Yzupki = int(random.randint(30,750))
 
+szansa_power_up = 0
+ktory_power_up = 3
 
 pygame.display.set_caption('Zaskroniec')
 TLO = (50, 205, 50)
@@ -62,12 +79,14 @@ przegrales = False
 is_running = True
 while is_running:
     if przegrales == False:
-        SCREEN.fill(TLO)
+        SCREEN.blit(essa, (0, 0))
         gorasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 0, 890, 10))
         dolsciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 790, 890, 10))
         lewasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 0, 10, 890))
         prawasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (890, 0, 10, 890))
         jedzenie1 = pygame.draw.rect(SCREEN, KOLOREKJEDZ, [Xjedzeniaupdate, Yjedzeniaupdate, 20, 20])
+
+
         mixer.init()
 
 
@@ -101,15 +120,44 @@ while is_running:
 
 
 
-        if ((Xjedzeniaupdate + 20 > Xglowy and Xjedzeniaupdate - 20  < Xglowy) and (Yjedzeniaupdate + 20 > Yglowy and Yjedzeniaupdate - 20 < Yglowy)):
+        if ((Xjedzeniaupdate + 20 > Xglowy and Xjedzeniaupdate - 20 < Xglowy) and (Yjedzeniaupdate + 20 > Yglowy and Yjedzeniaupdate - 20 < Yglowy)):
+            pygame.mixer.Channel(1).play(pygame.mixer.Sound('jedzenie.mp3'))
             Xjedzeniaupdate = int(random.randint(30,850))
             Yjedzeniaupdate = int(random.randint(30,750))
             dlugosc += 1
             szybkosc += 0.1
             punkty += 1
+            szansa_power_up = int(random.randint(0, 1))
+            if szansa_power_up == 1:
+                ktory_power_up = int(random.randint(0, 1))
 
+        if ((Xmleczka + 15 > Xglowy and Xmleczka - 15 < Xglowy) and (Ymleczka + 15 > Yglowy and Ymleczka - 15 < Yglowy)):
+            pygame.mixer.Channel(1).play(pygame.mixer.Sound('jedzenie.mp3'))
+            Xmleczka = int(random.randint(30,850))
+            Ymleczka = int(random.randint(30,750))
+            szybkosc -= 0.1
+            SCREEN.blit(mleczko_power_up, (Xmleczka, Ymleczka))
+            szansa_power_up = int(random.randint(0, 1))
+            if szansa_power_up == 1:
+                ktory_power_up = int(random.randint(0, 1))
 
-        jedzenie1 = pygame.draw.rect(SCREEN, KOLOREKJEDZ, [Xjedzeniaupdate, Yjedzeniaupdate, 20, 20])
+        if ((Xzupki + 20 > Xglowy and Xzupki - 20 < Xglowy) and (Yzupki + 20 > Yglowy and Yzupki - 20 < Yglowy)):
+            pygame.mixer.Channel(1).play(pygame.mixer.Sound('jedzenie.mp3'))
+            Xzupki = int(random.randint(30,850))
+            Yzupki = int(random.randint(30,750))
+            szybkosc += 0.1
+            dlugosc -= 1
+            del kordy[0]
+            szansa_power_up = int(random.randint(0, 1))
+            if szansa_power_up == 1:
+                ktory_power_up = int(random.randint(0, 1))
+
+        if szansa_power_up == 1 and ktory_power_up == 1:
+            SCREEN.blit(mleczko_power_up, (Xmleczka, Ymleczka))
+
+        if szansa_power_up == 1 and ktory_power_up == 0:
+            SCREEN.blit(zupka_power_up, (Xzupki, Yzupki))
+
         licznik = czcionka.render("Score: " + str(punkty), 1, (0, 0, 0))
         SCREEN.blit(licznik, (400, 10))
 
@@ -120,7 +168,7 @@ while is_running:
 
 
         for blok in kordy:
-            pygame.draw.rect(SCREEN, (10, 10, 10), [blok[0], blok[1], rozmiar, rozmiar])
+            pygame.draw.rect(SCREEN, (75, 0, 130), [blok[0], blok[1], rozmiar, rozmiar])
 
 
         if len(kordy)>dlugosc:
