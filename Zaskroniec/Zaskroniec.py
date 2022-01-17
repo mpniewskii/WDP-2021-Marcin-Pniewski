@@ -19,18 +19,17 @@ def uruchom():
     prawasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (890, 0, 10, 890))
     jedzenie1 = SCREEN.blit(zwykle_jedzenie, (Xjedzeniaupdate, Yjedzeniaupdate))
 
-
     mixer.init()
     przegrales = False
 
 #Wyświetla ekran z infomacjami o rozgrywce po przegranej
 def game_over():
-    with open('High_Score.txt', 'r', encoding='utf-8') as file:
+    with open('High_Score.txt', 'r') as file:
         high_score = file.read()
         high_score = int(high_score)
         if punkty>high_score:
             high_score=punkty;
-    with open('High_Score.txt', 'w', encoding='utf-8') as file:
+    with open('High_Score.txt', 'w') as file:
         if punkty >= high_score:
             file.write(f'{punkty}')
         else:
@@ -53,7 +52,7 @@ def game_over():
 #Generuje wężą
 def waz():
     for blok in kordy:
-        pygame.draw.rect(SCREEN, (75, 0, 130), [blok[0], blok[1], rozmiar, rozmiar])
+        pygame.draw.rect(SCREEN, (0, 255, 0), [blok[0], blok[1], rozmiar, rozmiar])
 
     if len(kordy) > dlugosc:
         del kordy[0]
@@ -158,7 +157,7 @@ while is_running:
             pygame.mixer.Channel(1).play(pygame.mixer.Sound('jedzenie.mp3'))
             Xjedzeniaupdate = int(random.randint(30,850))
             Yjedzeniaupdate = int(random.randint(30,750))
-            if Xjedzeniaupdate in kordy or Yjedzeniaupdate in kordy:
+            if Xjedzeniaupdate in kordy and Yjedzeniaupdate in kordy:
                 Xjedzeniaupdate = int(random.randint(30, 850))
                 Yjedzeniaupdate = int(random.randint(30, 750))
             dlugosc += 1
@@ -172,7 +171,7 @@ while is_running:
             pygame.mixer.Channel(1).play(pygame.mixer.Sound('jedzenie.mp3'))
             Xmleczka = int(random.randint(30,850))
             Ymleczka = int(random.randint(30,750))
-            if Xmleczka in kordy or Ymleczka in kordy:
+            if Xmleczka in kordy and Ymleczka in kordy:
                 Xmleczka = int(random.randint(30, 850))
                 Ymleczka = int(random.randint(30, 750))
             szybkosc -= 0.5
@@ -185,7 +184,7 @@ while is_running:
             pygame.mixer.Channel(1).play(pygame.mixer.Sound('major-smiechu-warte.mp3'))
             Xzupki = int(random.randint(30,850))
             Yzupki = int(random.randint(30,750))
-            if Xzupki in kordy or Yzupki in kordy:
+            if Xzupki in kordy and Yzupki in kordy:
                 Xzupki = int(random.randint(30, 850))
                 Yzupki = int(random.randint(30, 750))
             szybkosc += 0.5
