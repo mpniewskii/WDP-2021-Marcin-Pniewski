@@ -10,18 +10,67 @@ mixer.music.load('soundtrack_gra.mp3')
 mixer.music.play()
 pygame.mixer.music.play(-1)
 
+def uruchom():
+    SCREEN.blit(essa, (0, 0))
+    gorasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 0, 890, 10))
+    dolsciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 790, 890, 10))
+    lewasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 0, 10, 890))
+    prawasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (890, 0, 10, 890))
+    jedzenie1 = pygame.draw.rect(SCREEN, KOLOREKJEDZ, [Xjedzeniaupdate, Yjedzeniaupdate, 20, 20])
+
+    mixer.init()
+    przegrales = False
+
 
 def game_over():
     SCREEN.blit(cmentarz, [0, 0])
     napis_game_over = czcionka_game_over.render("Przegrałeś! Twoja punktacja to: " + str(punkty), 1, (0, 0, 0))
-    instrukcje = czcionka_game_over.render("Naciśnij X by zagrać ponownie lub Y by wyjść!", 1, (0, 0, 0))
+    instrukcje = czcionka_game_over.render("Naciśnij Y by wyjść!", 1, (0, 0, 0))
     SCREEN.blit(napis_game_over, (130, 10))
     SCREEN.blit(instrukcje, (130, 110))
     kordy.clear()
     mixer.music.load('game_over_soundtrack.mp3')
     mixer.music.play()
     pygame.display.update()
+    klawisz_game_over = pygame.key.get_pressed()
 
+
+
+def waz():
+    for blok in kordy:
+        pygame.draw.rect(SCREEN, (75, 0, 130), [blok[0], blok[1], rozmiar, rozmiar])
+
+    if len(kordy) > dlugosc:
+        del kordy[0]
+
+def ruchy():
+    global ruch
+    global Xglowy
+    global Yglowy
+    global ruch_pion
+    global ruch_boki
+
+    klawisz = pygame.key.get_pressed()
+    if klawisz[pygame.K_LEFT] and ruch != 'prawo':
+        ruch = 'lewo'
+        ruch_boki = -rozmiar
+        ruch_pion = 0
+    if klawisz[pygame.K_RIGHT] and ruch != 'lewo':
+        ruch = 'prawo'
+        ruch_boki = rozmiar
+        ruch_pion = 0
+    if klawisz[pygame.K_UP] and ruch != 'dol':
+        ruch = 'gora'
+        ruch_pion = -rozmiar
+        ruch_boki = 0
+    if ruch == 'dol' or klawisz[pygame.K_DOWN] and ruch != 'gora':
+        ruch = 'dol'
+        ruch_pion = rozmiar
+        ruch_boki = 0
+    if przegrales == False:
+        Xglowy += ruch_boki
+        Yglowy += ruch_pion
+        kordy.append([Xglowy, Yglowy])
 
 
 
@@ -64,10 +113,10 @@ Yglowy = 10
 kordy = []
 ruch_boki = 0
 ruch_pion = 0
+ruch = 'dol'
 rozmiar = 20
 dlugosc = 2
 punkty = 0
-ruch = 'dol'
 
 
 Xjedzeniaupdate = 40
@@ -77,45 +126,11 @@ Yjedzeniaupdate = 40
 
 przegrales = False
 is_running = True
+
 while is_running:
     if przegrales == False:
-        SCREEN.blit(essa, (0, 0))
-        gorasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 0, 890, 10))
-        dolsciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 790, 890, 10))
-        lewasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 0, 10, 890))
-        prawasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (890, 0, 10, 890))
-        jedzenie1 = pygame.draw.rect(SCREEN, KOLOREKJEDZ, [Xjedzeniaupdate, Yjedzeniaupdate, 20, 20])
-
-
-        mixer.init()
-
-
-
-
-
-        klawisz = pygame.key.get_pressed()
-
-        if klawisz[pygame.K_LEFT] and ruch != 'prawo':
-            ruch = 'lewo'
-            ruch_boki = -rozmiar
-            ruch_pion = 0
-        if klawisz[pygame.K_RIGHT] and ruch != 'lewo':
-            ruch = 'prawo'
-            ruch_boki = rozmiar
-            ruch_pion = 0
-        if klawisz[pygame.K_UP] and ruch != 'dol':
-            ruch = 'gora'
-            ruch_pion = -rozmiar
-            ruch_boki = 0
-        if ruch == 'dol' or klawisz[pygame.K_DOWN] and ruch != 'gora':
-            ruch = 'dol'
-            ruch_pion = rozmiar
-            ruch_boki = 0
-
-        if przegrales == False:
-            Xglowy += ruch_boki
-            Yglowy += ruch_pion
-            kordy.append([Xglowy, Yglowy])
+        uruchom()
+        ruchy()
 
 
 
@@ -135,7 +150,7 @@ while is_running:
             pygame.mixer.Channel(1).play(pygame.mixer.Sound('jedzenie.mp3'))
             Xmleczka = int(random.randint(30,850))
             Ymleczka = int(random.randint(30,750))
-            szybkosc -= 0.1
+            szybkosc -= 0.5
             SCREEN.blit(mleczko_power_up, (Xmleczka, Ymleczka))
             szansa_power_up = int(random.randint(0, 1))
             if szansa_power_up == 1:
@@ -145,7 +160,7 @@ while is_running:
             pygame.mixer.Channel(1).play(pygame.mixer.Sound('jedzenie.mp3'))
             Xzupki = int(random.randint(30,850))
             Yzupki = int(random.randint(30,750))
-            szybkosc += 0.1
+            szybkosc += 0.5
             dlugosc -= 1
             del kordy[0]
             szansa_power_up = int(random.randint(0, 1))
@@ -161,18 +176,10 @@ while is_running:
         licznik = czcionka.render("Score: " + str(punkty), 1, (0, 0, 0))
         SCREEN.blit(licznik, (400, 10))
 
+        waz()
         for blok in kordy[:-1]:
             if blok[0] == Xglowy and blok[1] == Yglowy:
                 przegrales = True
-
-
-
-        for blok in kordy:
-            pygame.draw.rect(SCREEN, (75, 0, 130), [blok[0], blok[1], rozmiar, rozmiar])
-
-
-        if len(kordy)>dlugosc:
-            del kordy[0]
         if Yglowy > 770 or Yglowy < 10 or Xglowy > 870 or Xglowy < 10:
             przegrales = True
         if przegrales == True:
@@ -199,3 +206,4 @@ while is_running:
 pygame.quit()
 
 #Pracowalem_na_zajeciach_10.01_zdalnie_z_powodu_slabego_samopoczucia
+#Dodaje_pogram_przepisany_na_funkcje
