@@ -10,6 +10,7 @@ mixer.music.load('soundtrack_gra.mp3')
 mixer.music.play()
 pygame.mixer.music.play(-1)
 
+#Uruchamia nam początkowy setup świata naszego węża
 def uruchom():
     SCREEN.blit(essa, (0, 0))
     gorasciana = pygame.draw.rect(SCREEN, (255, 0, 0), (0, 0, 890, 10))
@@ -22,7 +23,7 @@ def uruchom():
     mixer.init()
     przegrales = False
 
-
+#Wyświetla ekran z infomacjami o rozgrywce po przegranej
 def game_over():
     with open('High_Score.txt', 'r', encoding='utf-8') as file:
         high_score = file.read()
@@ -49,7 +50,7 @@ def game_over():
     klawisz_game_over = pygame.key.get_pressed()
 
 
-
+#Generuje wężą
 def waz():
     for blok in kordy:
         pygame.draw.rect(SCREEN, (75, 0, 130), [blok[0], blok[1], rozmiar, rozmiar])
@@ -57,6 +58,7 @@ def waz():
     if len(kordy) > dlugosc:
         del kordy[0]
 
+#Zarządza ruchem wężą
 def ruchy():
     global ruch
     global Xglowy
